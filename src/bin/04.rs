@@ -1,10 +1,14 @@
+#![feature(iter_collect_into)]
 advent_of_code::solution!(4);
 
-fn get_count(line: &str)-> usize {
+type B = Vec<u32>;
+
+fn get_count(line: &str, buffer: &mut B)-> usize {
+    buffer.clear();
     let (_, u) = line.split_once(":").unwrap();
     let (before, after) = u.split_once("|").unwrap();
-    let a = before.split_ascii_whitespace().map(fast_string_parse).collect::<Vec<_>>();
-    after.split_ascii_whitespace().map(fast_string_parse).fold(0, |i, x| if a.contains(&x) { i + 1 } else { i })
+    buffer.extend(before.split_ascii_whitespace().map(fast_string_parse));
+    after.split_ascii_whitespace().map(fast_string_parse).fold(0, |i, x| if buffer.contains(&x) { i + 1 } else { i })
 }
 
 fn fast_string_parse(x: &str) -> u32 {
@@ -15,18 +19,20 @@ fn fast_string_parse(x: &str) -> u32 {
     ans
 }
 pub fn part_one(input: &str) -> Option<u32> {
+    let mut buffer = B::with_capacity(20);
     Some(input.lines().map(|x| {
-        let c = get_count(x);
+        let c = get_count(x, &mut buffer);
         let v = if c > 0 { 1 << (c - 1) } else { 0 };
         v
     }).sum())
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
+    let mut buffer = B::with_capacity(20);
     let lines = input.lines().collect::<Vec<_>>();
     let mut count  = vec![1u32; lines.len()];
     for i in 0..lines.len() {
-        let c = get_count(lines[i]);
+        let c = get_count(lines[i], &mut buffer);
         // the next several get incremented by value of count[i];
         let amt = count[i];
         for j in 1..=c {
