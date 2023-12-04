@@ -11,10 +11,10 @@ Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.
 
 | Day | Part 1 | Part 2 |
 | :---: | :---: | :---:  |
-| [Day 1](./src/bin/01.rs) | `32.1µs` | `225.3µs` |
-| [Day 2](./src/bin/02.rs) | `50.0µs` | `48.0µs` |
-| [Day 3](./src/bin/03.rs) | `72.5µs` | `72.5µs` |
-| [Day 4](./src/bin/04.rs) | `-` | `-` |
+| [Day 1](./src/bin/01.rs) | `33.7µs` | `221.0µs` |
+| [Day 2](./src/bin/02.rs) | `48.3µs` | `47.8µs` |
+| [Day 3](./src/bin/03.rs) | `81.8µs` | `75.5µs` |
+| [Day 4](./src/bin/04.rs) | `188.6µs` | `188.9µs` |
 | [Day 5](./src/bin/05.rs) | `-` | `-` |
 | [Day 6](./src/bin/06.rs) | `-` | `-` |
 | [Day 7](./src/bin/07.rs) | `-` | `-` |
@@ -37,7 +37,7 @@ Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.
 | [Day 24](./src/bin/24.rs) | `-` | `-` |
 | [Day 25](./src/bin/25.rs) | `-` | `-` |
 
-**Total: 0.50ms**
+**Total: 0.89ms**
 <!--- benchmarking table --->
 
 ---
