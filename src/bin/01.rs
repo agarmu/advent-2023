@@ -15,9 +15,9 @@ pub fn part_one(input: &str) -> Option<u32> {
 const R: [&'static str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
 ];
-pub fn make_stack(input: &str) -> Vec<u32> {
+pub fn make_stack(input: &str, res: &mut Vec<u32>) {
+    res.clear();
     let x = input.as_bytes();
-    let mut res: Vec<u32> = vec![];
     for i in 0..input.len() {
         for (k, r) in R.iter().enumerate() {
             if i + r.len() <= input.len() {
@@ -31,15 +31,14 @@ pub fn make_stack(input: &str) -> Vec<u32> {
             res.push((x[i] - b'0') as u32);
         }
     }
-    res
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-
+    let mut res: Vec<u32> = Vec::with_capacity(16);
     Some(input
         .lines()
         .map(|x| {
-            let res = make_stack(x);
+            make_stack(x, &mut res);
             res[0] * 10 + res[res.len() - 1]
         }).sum())
 }
