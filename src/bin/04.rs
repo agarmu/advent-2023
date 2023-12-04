@@ -1,11 +1,4 @@
-use std::collections::HashSet;
-
 advent_of_code::solution!(4);
-
-pub struct Card {
-    number: u32,
-    winners: u32
-}
 
 fn get_count(line: &str)-> usize {
     let (_, u) = line.split_once(":").unwrap();
@@ -42,12 +35,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(13));
     }
 
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(30));
     }
 }
