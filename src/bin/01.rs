@@ -1,46 +1,65 @@
 advent_of_code::solution!(1);
 
-pub fn part_one(input: &str) -> Option<u32> {
-    Some(input
-        .lines()
-        .map(|x| {
-            let mut q = x.bytes()
-                .filter(|x| x >= &b'0' && x <= &b'9')
-                .map(|x| (x - b'0') as u32);
-            let fd = q.next().unwrap();
-            let ld = q.last().unwrap_or(fd);
-            fd * 10 + ld
-        }).sum())
-}
 const R: [&'static str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
 ];
-pub fn make_stack(input: &str, res: &mut Vec<u32>) {
-    res.clear();
+pub fn compute1(input: &str) -> u32 {
     let x = input.as_bytes();
+    let mut fd = 0;
+    let mut ld = 0;
     for i in 0..input.len() {
+        if x[i].is_ascii_digit() {
+            fd = (x[i] - b'0') as u32;
+            break;
+        }
+    }
+    for i in (0..input.len()).rev() {
+        if x[i].is_ascii_digit() {
+            ld = (x[i] - b'0') as u32;
+            break;
+        }
+    }
+    fd * 10 + ld
+}
+pub fn compute2(input: &str) -> u32 {
+    let x = input.as_bytes();
+    let mut fd = 0;
+    let mut ld = 0;
+    'outer: for i in 0..input.len() {
+        if x[i].is_ascii_digit() {
+            fd = (x[i] - b'0') as u32;
+            break;
+        }
         for (k, r) in R.iter().enumerate() {
             if i + r.len() <= input.len() {
                if input[i..].starts_with(r) {
-                    res.push(k as u32 + 1);
-                    continue;
+                    fd = k as u32 + 1;
+                    break 'outer;
                }
             }
         }
-        if x[i] >= b'0' && x[i] <= b'9' {
-            res.push((x[i] - b'0') as u32);
+    }
+    'outer: for i in (0..input.len()).rev() {
+        if x[i].is_ascii_digit() {
+            ld = (x[i] - b'0') as u32;
+            break;
+        }
+        for (k, r) in R.iter().enumerate() {
+            if i + r.len() <= input.len() {
+               if input[i..].starts_with(r) {
+                    ld = k as u32 + 1;
+                    break 'outer;
+               }
+            }
         }
     }
+    fd * 10 + ld
 }
-
+pub fn part_one(input: &str) -> Option<u32> {
+    Some(input.lines().map(compute1).sum())
+}
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut res: Vec<u32> = Vec::with_capacity(16);
-    Some(input
-        .lines()
-        .map(|x| {
-            make_stack(x, &mut res);
-            res[0] * 10 + res[res.len() - 1]
-        }).sum())
+    Some(input.lines() .map(compute2).sum())
 }
 
 #[cfg(test)]
