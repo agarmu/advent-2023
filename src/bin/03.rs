@@ -16,7 +16,7 @@ impl<T: Iterator> Iterator for PrePost<T> {
                     std::mem::swap(&mut x, &mut self.post);
                     x
                 }
-                x => x
+                x => x,
             }
         } else {
             let mut x = None;
@@ -28,9 +28,21 @@ impl<T: Iterator> Iterator for PrePost<T> {
 
 #[inline(always)]
 fn parse(input: &str) -> Vec<Vec<u8>> {
-    let mut data = input.lines().map(|x| {
-       PrePost { x: PrePost {x: x.bytes(), pre:Some(b'.'), post: Some(b'.')}, pre: Some(b'.'), post: Some(b'.')}.collect::<Vec<_>>()
-    }).collect::<Vec<_>>();
+    let mut data = input
+        .lines()
+        .map(|x| {
+            PrePost {
+                x: PrePost {
+                    x: x.bytes(),
+                    pre: Some(b'.'),
+                    post: Some(b'.'),
+                },
+                pre: Some(b'.'),
+                post: Some(b'.'),
+            }
+            .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
     data.insert(0, vec![b'.'; data[0].len()]);
     data.push(vec![b'.'; data[0].len()]);
     data
@@ -40,22 +52,38 @@ fn check_adjacents(i: usize, js: usize, je: usize, data: &Vec<Vec<u8>>) -> bool 
     // top
     for j in js..=je {
         let q = data[i - 1][j];
-        if q.is_ascii_digit() || q == b'.' { continue; } else { return true; }
+        if q.is_ascii_digit() || q == b'.' {
+            continue;
+        } else {
+            return true;
+        }
     }
     // bottom
     for j in js..=je {
         let q = data[i + 1][j];
-        if q.is_ascii_digit() || q == b'.' { continue; } else { return true; }
+        if q.is_ascii_digit() || q == b'.' {
+            continue;
+        } else {
+            return true;
+        }
     }
     // left
-    for i in (i-1)..=(i+1) {
+    for i in (i - 1)..=(i + 1) {
         let q = data[i][js - 1];
-        if q.is_ascii_digit() || q == b'.' { continue; } else { return true; }
+        if q.is_ascii_digit() || q == b'.' {
+            continue;
+        } else {
+            return true;
+        }
     }
     // right
-    for i in (i-1)..=(i+1) {
+    for i in (i - 1)..=(i + 1) {
         let q = data[i][je + 1];
-        if q.is_ascii_digit() || q == b'.' { continue; } else { return true; }
+        if q.is_ascii_digit() || q == b'.' {
+            continue;
+        } else {
+            return true;
+        }
     }
     false
 }
@@ -117,18 +145,22 @@ fn check_adjacents_pt2(i: usize, j: usize, data: &Vec<Vec<u8>>) -> u32 {
     check_lr(i - 1, j, data, &mut numbers);
     // bottom
     check_lr(i + 1, j, data, &mut numbers);
-    // left 
+    // left
     check_left(i, j - 1, data, &mut numbers);
     // right
     check_right(i, j + 1, data, &mut numbers);
-    if numbers.len() == 2 { numbers[0] * numbers[1] } else { 0 }
+    if numbers.len() == 2 {
+        numbers[0] * numbers[1]
+    } else {
+        0
+    }
 }
-
 
 pub fn part_one(input: &str) -> Option<i32> {
     let data = parse(input);
     let mut values: Vec<i32> = Vec::with_capacity(20);
-    for i in 1..(data.len() - 1) { // exclude first and last row
+    for i in 1..(data.len() - 1) {
+        // exclude first and last row
         let mut cur_n = -1;
         let row: &[u8] = &data[i];
         let mut jstart: usize = 0;

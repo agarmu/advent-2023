@@ -1,7 +1,7 @@
 advent_of_code::solution!(1);
 
 const R: [&'static str; 9] = [
-    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
 ];
 pub fn compute1(input: &str) -> u32 {
     let x = input.as_bytes();
@@ -32,10 +32,10 @@ pub fn compute2(input: &str) -> u32 {
         }
         for (k, r) in R.iter().enumerate() {
             if i + r.len() <= input.len() {
-               if input[i..].starts_with(r) {
+                if input[i..].starts_with(r) {
                     fd = k as u32 + 1;
                     break 'outer;
-               }
+                }
             }
         }
     }
@@ -46,10 +46,10 @@ pub fn compute2(input: &str) -> u32 {
         }
         for (k, r) in R.iter().enumerate() {
             if i + r.len() <= input.len() {
-               if input[i..].starts_with(r) {
+                if input[i..].starts_with(r) {
                     ld = k as u32 + 1;
                     break 'outer;
-               }
+                }
             }
         }
     }
@@ -59,7 +59,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(input.lines().map(compute1).sum())
 }
 pub fn part_two(input: &str) -> Option<u32> {
-    Some(input.lines() .map(compute2).sum())
+    Some(input.lines().map(compute2).sum())
 }
 
 #[cfg(test)]
