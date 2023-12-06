@@ -16,15 +16,16 @@ pub fn part_one(input: &str) -> Option<u32> {
         .unwrap()
         .split_ascii_whitespace()
         .map(|x| x.bytes().fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32));
-    let mut res = 1;
-    for (time, dist) in times.zip(distances) {
-        let disc = time * time - 4.0 * dist;
-        let disc = disc.sqrt() / 2.0;
-        let min = (f32::max(0.0, time / 2.0 - disc) + DELTA).ceil() as u32;
-        let max = (f32::min(time, time / 2.0 + disc) - DELTA).floor() as u32;
-        res *= max - min + 1;
-    }
-    Some(res)
+    Some(times.zip(distances).map(|(x, y)| do_calculation(x, y)).product())
+}
+
+#[inline(always)]
+fn do_calculation(time: f32, dist: f32) -> u32 {
+    let disc = time * time - 4.0 * dist;
+    let disc = disc.sqrt() / 2.0;
+    let min = (f32::max(0.0, time / 2.0 - disc) + DELTA + 0.5) as u32;
+    let max = (f32::min(time, time / 2.0 + disc) - DELTA) as u32;
+    max - min + 1
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -32,32 +33,16 @@ pub fn part_two(input: &str) -> Option<u32> {
     let time = lines
         .next()
         .unwrap()
-        .strip_prefix("Time:")
-        .unwrap()
         .bytes()
-        .filter(|x| !x.is_ascii_whitespace())
+        .filter(|x| x.is_ascii_digit())
         .fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32);
     let dist = lines
         .next()
         .unwrap()
-        .strip_prefix("Distance:")
-        .unwrap()
         .bytes()
-        .filter(|x| !x.is_ascii_whitespace())
+        .filter(|x| x.is_ascii_digit())
         .fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32);
-    let disc = time * time - 4.0 * dist;
-    if disc <= 0.0 {
-        return None;
-    }
-    let disc = disc.sqrt() / 2.0;
-    let fmin = f32::max(0.0, time / 2.0 - disc);
-    let fmax = f32::min(time, time / 2.0 + disc);
-    let min = (fmin + DELTA).ceil() as u32;
-    let max = (fmax - DELTA).floor() as u32;
-    if max <= min {
-        return None;
-    }
-    Some(max - min + 1)
+    Some(do_calculation(time, dist))
 }
 
 #[cfg(test)]
