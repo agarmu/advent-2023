@@ -1,5 +1,5 @@
 advent_of_code::solution!(6);
-const DELTA: f64 = 0.001;
+const DELTA: f32 = 0.001;
 pub fn part_one(input: &str) -> Option<u32> {
     let mut lines = input.lines();
     let times = lines
@@ -8,20 +8,20 @@ pub fn part_one(input: &str) -> Option<u32> {
         .strip_prefix("Time:")
         .unwrap()
         .split_ascii_whitespace()
-        .map(|x| x.bytes().fold(0.0f64, |a, x| 10.0 * a + (x - b'0') as f64));
+        .map(|x| x.bytes().fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32));
     let distances = lines
         .next()
         .unwrap()
         .strip_prefix("Distance:")
         .unwrap()
         .split_ascii_whitespace()
-        .map(|x| x.bytes().fold(0.0f64, |a, x| 10.0 * a + (x - b'0') as f64));
+        .map(|x| x.bytes().fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32));
     let mut res = 1;
     for (time, dist) in times.zip(distances) {
         let disc = time * time - 4.0 * dist;
         let disc = disc.sqrt() / 2.0;
-        let min = (f64::max(0.0, time / 2.0 - disc) + DELTA).ceil() as u32;
-        let max = (f64::min(time, time / 2.0 + disc) - DELTA).floor() as u32;
+        let min = (f32::max(0.0, time / 2.0 - disc) + DELTA).ceil() as u32;
+        let max = (f32::min(time, time / 2.0 + disc) - DELTA).floor() as u32;
         res *= max - min + 1;
     }
     Some(res)
@@ -36,7 +36,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         .unwrap()
         .bytes()
         .filter(|x| !x.is_ascii_whitespace())
-        .fold(0.0f64, |a, x| 10.0 * a + (x - b'0') as f64);
+        .fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32);
     let dist = lines
         .next()
         .unwrap()
@@ -44,14 +44,14 @@ pub fn part_two(input: &str) -> Option<u32> {
         .unwrap()
         .bytes()
         .filter(|x| !x.is_ascii_whitespace())
-        .fold(0.0f64, |a, x| 10.0 * a + (x - b'0') as f64);
+        .fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32);
     let disc = time * time - 4.0 * dist;
     if disc <= 0.0 {
         return None;
     }
     let disc = disc.sqrt() / 2.0;
-    let fmin = f64::max(0.0, time / 2.0 - disc);
-    let fmax = f64::min(time, time / 2.0 + disc);
+    let fmin = f32::max(0.0, time / 2.0 - disc);
+    let fmax = f32::min(time, time / 2.0 + disc);
     let min = (fmin + DELTA).ceil() as u32;
     let max = (fmax - DELTA).floor() as u32;
     if max <= min {
