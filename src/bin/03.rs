@@ -48,7 +48,7 @@ fn parse(input: &str) -> Vec<Vec<u8>> {
     data
 }
 
-fn check_adjacents(i: usize, js: usize, je: usize, data: &Vec<Vec<u8>>) -> bool {
+fn check_adjacents(i: usize, js: usize, je: usize, data: &[Vec<u8>]) -> bool {
     // top
     for j in js..=je {
         let q = data[i - 1][j];
@@ -68,7 +68,7 @@ fn check_adjacents(i: usize, js: usize, je: usize, data: &Vec<Vec<u8>>) -> bool 
         }
     }
     // left
-    for i in (i - 1)..=(i + 1) {
+    for i in [i - 1, i, i + 1] {
         let q = data[i][js - 1];
         if q.is_ascii_digit() || q == b'.' {
             continue;
@@ -77,7 +77,7 @@ fn check_adjacents(i: usize, js: usize, je: usize, data: &Vec<Vec<u8>>) -> bool 
         }
     }
     // right
-    for i in (i - 1)..=(i + 1) {
+    for i in [i - 1, i, i + 1] {
         let q = data[i][je + 1];
         if q.is_ascii_digit() || q == b'.' {
             continue;
@@ -88,14 +88,14 @@ fn check_adjacents(i: usize, js: usize, je: usize, data: &Vec<Vec<u8>>) -> bool 
     false
 }
 
-fn check_lr(i: usize, j: usize, data: &Vec<Vec<u8>>, numbers: &mut Vec<u32>) {
+fn check_lr(i: usize, j: usize, data: &[Vec<u8>], numbers: &mut Vec<u32>) {
     if data[i][j].is_ascii_digit() {
         let mut num = (data[i][j] - b'0') as u32;
         let mut k = j - 1;
         let mut multiplier = 10u32;
         // search left!
         while data[i][k].is_ascii_digit() {
-            num = (data[i][k] - b'0') as u32 * multiplier + num;
+            num += (data[i][k] - b'0') as u32 * multiplier;
             k -= 1;
             multiplier *= 10;
         }
@@ -113,21 +113,21 @@ fn check_lr(i: usize, j: usize, data: &Vec<Vec<u8>>, numbers: &mut Vec<u32>) {
     }
 }
 
-fn check_left(i: usize, j: usize, data: &Vec<Vec<u8>>, numbers: &mut Vec<u32>) {
+fn check_left(i: usize, j: usize, data: &[Vec<u8>], numbers: &mut Vec<u32>) {
     if data[i][j].is_ascii_digit() {
         let mut num = (data[i][j] - b'0') as u32;
         let mut k = j - 1;
         let mut multiplier = 10u32;
         // search left!
         while data[i][k].is_ascii_digit() {
-            num = (data[i][k] - b'0') as u32 * multiplier + num;
+            num += (data[i][k] - b'0') as u32 * multiplier;
             k -= 1;
             multiplier *= 10;
         }
         numbers.push(num);
     }
 }
-fn check_right(i: usize, j: usize, data: &Vec<Vec<u8>>, numbers: &mut Vec<u32>) {
+fn check_right(i: usize, j: usize, data: &[Vec<u8>], numbers: &mut Vec<u32>) {
     if data[i][j].is_ascii_digit() {
         let mut num = (data[i][j] - b'0') as u32;
         let mut k = j + 1;
@@ -139,7 +139,7 @@ fn check_right(i: usize, j: usize, data: &Vec<Vec<u8>>, numbers: &mut Vec<u32>) 
     }
 }
 
-fn check_adjacents_pt2(i: usize, j: usize, data: &Vec<Vec<u8>>) -> u32 {
+fn check_adjacents_pt2(i: usize, j: usize, data: &[Vec<u8>]) -> u32 {
     let mut numbers = Vec::with_capacity(4);
     // top
     check_lr(i - 1, j, data, &mut numbers);
@@ -165,23 +165,21 @@ pub fn part_one(input: &str) -> Option<i32> {
         let row: &[u8] = &data[i];
         let mut jstart: usize = 0;
         let mut jend: usize;
-        for j in 0..row.len() {
+        for (j, item) in row.iter().enumerate() {
             if row[j].is_ascii_digit() {
-                let v = (row[j] - b'0') as i32;
+                let v = (item - b'0') as i32;
                 if cur_n > 0 {
                     cur_n = cur_n * 10 + v;
                 } else {
                     cur_n = v;
                     jstart = j;
                 }
-            } else {
-                if cur_n > 0 {
-                    jend = j - 1;
-                    if check_adjacents(i, jstart, jend, &data) {
-                        values.push(cur_n);
-                    }
-                    cur_n = -1;
+            } else if cur_n > 0 {
+                jend = j - 1;
+                if check_adjacents(i, jstart, jend, &data) {
+                    values.push(cur_n);
                 }
+                cur_n = -1;
             }
         }
     }

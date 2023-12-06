@@ -5,8 +5,8 @@ type B = Vec<u32>;
 
 fn get_count(line: &str, buffer: &mut B) -> usize {
     buffer.clear();
-    let (_, u) = line.split_once(":").unwrap();
-    let (before, after) = u.split_once("|").unwrap();
+    let (_, u) = line.split_once(':').unwrap();
+    let (before, after) = u.split_once('|').unwrap();
     buffer.extend(before.split_ascii_whitespace().map(fast_string_parse));
     after
         .split_ascii_whitespace()
@@ -29,8 +29,11 @@ pub fn part_one(input: &str) -> Option<u32> {
             .lines()
             .map(|x| {
                 let c = get_count(x, &mut buffer);
-                let v = if c > 0 { 1 << (c - 1) } else { 0 };
-                v
+                if c > 0 {
+                    1 << (c - 1)
+                } else {
+                    0
+                }
             })
             .sum(),
     )

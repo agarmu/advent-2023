@@ -11,7 +11,7 @@ impl Game {
         let mut r = 0;
         let mut g = 0;
         let mut b = 0;
-        x.split(",").map(|x| x.trim()).for_each(|y| {
+        x.split(',').map(|x| x.trim()).for_each(|y| {
             let mut q = y.split_ascii_whitespace();
             let v = q.next().unwrap().parse::<u64>().unwrap();
             let t = q.next().unwrap();
@@ -47,8 +47,8 @@ pub fn part_one(input: &str) -> Option<usize> {
         input
             .lines()
             .map(|x| {
-                let q = x.split(":").skip(1).next().unwrap().trim();
-                q.split(";").map(Game::parse).reduce(|x, y| x & y).unwrap()
+                let q = x.split(':').nth(1).unwrap().trim();
+                q.split(';').map(Game::parse).reduce(|x, y| x & y).unwrap()
             })
             .enumerate()
             .filter(|(_, x)| {
@@ -68,8 +68,8 @@ pub fn part_two(input: &str) -> Option<u64> {
         input
             .lines()
             .map(|x| {
-                let q = x.split(":").skip(1).next().unwrap().trim();
-                q.split(";").map(Game::parse).reduce(|x, y| x & y).unwrap()
+                let q = x.split(':').nth(1).unwrap().trim();
+                q.split(';').map(Game::parse).reduce(|x, y| x & y).unwrap()
             })
             .map(|x| x.power())
             .sum(),
