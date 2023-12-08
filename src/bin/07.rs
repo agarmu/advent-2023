@@ -4,12 +4,12 @@ use itertools::Itertools;
 
 advent_of_code::solution!(7);
 
-fn parse_char(x: u8, jvalue: u8) -> u8 {
+fn parse_char<const JVALUE: u8>(x: u8) -> u8 {
     match x {
         b'A' => 14,
         b'K' => 13,
         b'Q' => 12,
-        b'J' => jvalue,
+        b'J' => JVALUE,
         b'T' => 10,
         u => u - b'0',
     }
@@ -58,7 +58,7 @@ pub fn get_rank(x: &[usize]) -> GameRank {
 impl<const JVALUE: u8> Game<JVALUE> {
     fn parse(x: &str) -> Self {
         let (a, b) = x.trim().split_once(' ').unwrap();
-        let values = a.bytes().map(|x| parse_char(x, JVALUE)).collect_vec();
+        let values = a.bytes().map(parse_char::<JVALUE>).collect_vec();
         let bid = b.parse().unwrap();
         let mut countmap = HashMap::<u8, usize>::with_capacity(5);
         for x in &values {
@@ -107,12 +107,8 @@ impl<const JVALUE: u8> Ord for Game<JVALUE> {
     }
 }
 
-pub fn part_one(input: &str) -> Option<usize> {
-    solve::<11>(input)
-}
-pub fn part_two(input: &str) -> Option<usize> {
-    solve::<1>(input)
-}
+pub fn part_one(input: &str) -> Option<usize> { solve::<11>(input) }
+pub fn part_two(input: &str) -> Option<usize> { solve::<1>(input) }
 
 pub fn solve<const JVALUE: u8>(input: &str) -> Option<usize> {
     Some(
