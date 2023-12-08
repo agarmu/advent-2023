@@ -27,7 +27,7 @@ pub enum GameRank {
 }
 
 #[derive(Clone)]
-pub struct Game<const N: usize> {
+pub struct Game<const JVALUE: u8> {
     values: Vec<u8>,
     bid: usize,
     rank: GameRank,
@@ -55,15 +55,10 @@ pub fn get_rank(x: &[usize]) -> GameRank {
         _ => unreachable!(),
     }
 }
-impl<const N: usize> Game<N> {
+impl<const JVALUE: u8> Game<JVALUE> {
     fn parse(x: &str) -> Self {
-        let jvalue = match N {
-            1 => 11,
-            2 => 1,
-            _ => unreachable!(),
-        };
         let (a, b) = x.trim().split_once(' ').unwrap();
-        let values = a.bytes().map(|x| parse_char(x, jvalue)).collect_vec();
+        let values = a.bytes().map(|x| parse_char(x, JVALUE)).collect_vec();
         let bid = b.parse().unwrap();
         let mut countmap = HashMap::<u8, usize>::with_capacity(5);
         for x in &values {
@@ -92,18 +87,18 @@ impl<const N: usize> Game<N> {
         Ordering::Equal
     }
 }
-impl<const N: usize> PartialEq for Game<N> {
+impl<const JVALUE: u8> PartialEq for Game<JVALUE> {
     fn eq(&self, other: &Self) -> bool {
         self.values == other.values
     }
 }
-impl<const N: usize> Eq for Game<N> {}
-impl<const N: usize> PartialOrd for Game<N> {
+impl<const JVALUE: u8> Eq for Game<JVALUE> {}
+impl<const JVALUE: u8> PartialOrd for Game<JVALUE> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
        Some(self.cmp(other))
     }
 }
-impl<const N: usize> Ord for Game<N> {
+impl<const JVALUE: u8> Ord for Game<JVALUE> {
     fn cmp(&self, other: &Self) -> Ordering {
         match u8::cmp(&(self.rank as u8), &(other.rank as u8)) {
             Ordering::Equal => self.cmp_vals(other),
@@ -113,17 +108,17 @@ impl<const N: usize> Ord for Game<N> {
 }
 
 pub fn part_one(input: &str) -> Option<usize> {
-    solve::<1>(input)
+    solve::<11>(input)
 }
 pub fn part_two(input: &str) -> Option<usize> {
-    solve::<2>(input)
+    solve::<1>(input)
 }
 
-pub fn solve<const N: usize>(input: &str) -> Option<usize> {
+pub fn solve<const JVALUE: u8>(input: &str) -> Option<usize> {
     Some(
         input
             .lines()
-            .map(Game::<N>::parse)
+            .map(Game::<JVALUE>::parse)
             .sorted()
             .enumerate()
             .map(|(i, v)| (i + 1) * v.bid)
