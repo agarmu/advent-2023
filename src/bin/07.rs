@@ -62,7 +62,7 @@ impl<const N: usize> Game<N> {
             2 => 1,
             _ => unreachable!(),
         };
-        let (a, b) = x.trim().split_once(" ").unwrap();
+        let (a, b) = x.trim().split_once(' ').unwrap();
         let values = a.bytes().map(|x| parse_char(x, jvalue)).collect_vec();
         let bid = b.parse().unwrap();
         let mut countmap = HashMap::<u8, usize>::with_capacity(5);
@@ -73,12 +73,9 @@ impl<const N: usize> Game<N> {
         let rank = if jokercount == 5 {
             GameRank::FiveOfAKind
         } else {
-            let mut counts = countmap
-                .into_iter()
-                .map(|(_, x)| x)
-                .sorted()
-                .rev()
-                .collect_vec();
+            let mut counts = countmap.into_values().collect_vec();
+            counts.sort();
+            counts.reverse();
             counts[0] += jokercount;
             get_rank(&counts)
         };
@@ -103,10 +100,7 @@ impl<const N: usize> PartialEq for Game<N> {
 impl<const N: usize> Eq for Game<N> {}
 impl<const N: usize> PartialOrd for Game<N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        match u8::cmp(&(self.rank as u8), &(other.rank as u8)) {
-            Ordering::Equal => Some(self.cmp_vals(other)),
-            x => Some(x),
-        }
+       Some(self.cmp(other))
     }
 }
 impl<const N: usize> Ord for Game<N> {
