@@ -16,7 +16,12 @@ pub fn part_one(input: &str) -> Option<u32> {
         .unwrap()
         .split_ascii_whitespace()
         .map(|x| x.bytes().fold(0.0f32, |a, x| 10.0 * a + (x - b'0') as f32));
-    Some(times.zip(distances).map(|(x, y)| do_calculation(x, y)).product())
+    Some(
+        times
+            .zip(distances)
+            .map(|(x, y)| do_calculation(x, y))
+            .product(),
+    )
 }
 
 #[inline(always)]

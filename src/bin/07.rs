@@ -1,7 +1,4 @@
-use std::{
-    cmp::Ordering,
-    collections::HashMap,
-};
+use std::{cmp::Ordering, collections::HashMap};
 
 use itertools::Itertools;
 
@@ -63,7 +60,7 @@ impl<const N: usize> Game<N> {
         let jvalue = match N {
             1 => 11,
             2 => 1,
-            _ => unreachable!()
+            _ => unreachable!(),
         };
         let (a, b) = x.trim().split_once(" ").unwrap();
         let values = a.bytes().map(|x| parse_char(x, jvalue)).collect_vec();
@@ -121,8 +118,12 @@ impl<const N: usize> Ord for Game<N> {
     }
 }
 
-pub fn part_one(input: &str) -> Option<usize> { solve::<1>(input) }
-pub fn part_two(input: &str) -> Option<usize> { solve::<2>(input) }
+pub fn part_one(input: &str) -> Option<usize> {
+    solve::<1>(input)
+}
+pub fn part_two(input: &str) -> Option<usize> {
+    solve::<2>(input)
+}
 
 pub fn solve<const N: usize>(input: &str) -> Option<usize> {
     Some(
@@ -132,7 +133,7 @@ pub fn solve<const N: usize>(input: &str) -> Option<usize> {
             .sorted()
             .enumerate()
             .map(|(i, v)| (i + 1) * v.bid)
-            .sum()
+            .sum(),
     )
 }
 
