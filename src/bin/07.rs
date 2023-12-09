@@ -4,12 +4,12 @@ use itertools::Itertools;
 
 advent_of_code::solution!(7);
 
-fn parse_char<const JVALUE: u8>(x: u8) -> u8 {
+fn parse_char<const J: u8>(x: u8) -> u8 {
     match x {
         b'A' => 14,
         b'K' => 13,
         b'Q' => 12,
-        b'J' => JVALUE,
+        b'J' => J,
         b'T' => 10,
         u => u - b'0',
     }
@@ -27,7 +27,7 @@ pub enum GameRank {
 }
 
 #[derive(Clone)]
-pub struct Game<const JVALUE: u8> {
+pub struct Game<const J: u8> {
     values: Vec<u8>,
     bid: usize,
     rank: GameRank,
@@ -55,10 +55,10 @@ pub fn get_rank(x: &[usize]) -> GameRank {
         _ => unreachable!(),
     }
 }
-impl<const JVALUE: u8> Game<JVALUE> {
+impl<const J: u8> Game<J> {
     fn parse(x: &str) -> Self {
         let (a, b) = x.trim().split_once(' ').unwrap();
-        let values = a.bytes().map(parse_char::<JVALUE>).collect_vec();
+        let values = a.bytes().map(parse_char::<J>).collect_vec();
         let bid = b.parse().unwrap();
         let mut countmap = HashMap::<u8, usize>::with_capacity(5);
         for x in &values {
@@ -87,18 +87,18 @@ impl<const JVALUE: u8> Game<JVALUE> {
         Ordering::Equal
     }
 }
-impl<const JVALUE: u8> PartialEq for Game<JVALUE> {
+impl<const J: u8> PartialEq for Game<J> {
     fn eq(&self, other: &Self) -> bool {
         self.values == other.values
     }
 }
-impl<const JVALUE: u8> Eq for Game<JVALUE> {}
-impl<const JVALUE: u8> PartialOrd for Game<JVALUE> {
+impl<const J: u8> Eq for Game<J> {}
+impl<const J: u8> PartialOrd for Game<J> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-       Some(self.cmp(other))
+        Some(self.cmp(other))
     }
 }
-impl<const JVALUE: u8> Ord for Game<JVALUE> {
+impl<const J: u8> Ord for Game<J> {
     fn cmp(&self, other: &Self) -> Ordering {
         match u8::cmp(&(self.rank as u8), &(other.rank as u8)) {
             Ordering::Equal => self.cmp_vals(other),
@@ -107,14 +107,18 @@ impl<const JVALUE: u8> Ord for Game<JVALUE> {
     }
 }
 
-pub fn part_one(input: &str) -> Option<usize> { solve::<11>(input) }
-pub fn part_two(input: &str) -> Option<usize> { solve::<1>(input) }
+pub fn part_one(input: &str) -> Option<usize> {
+    solve::<11>(input)
+}
+pub fn part_two(input: &str) -> Option<usize> {
+    solve::<1>(input)
+}
 
-pub fn solve<const JVALUE: u8>(input: &str) -> Option<usize> {
+pub fn solve<const J: u8>(input: &str) -> Option<usize> {
     Some(
         input
             .lines()
-            .map(Game::<JVALUE>::parse)
+            .map(Game::<J>::parse)
             .sorted()
             .enumerate()
             .map(|(i, v)| (i + 1) * v.bid)
