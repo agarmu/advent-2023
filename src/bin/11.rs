@@ -38,6 +38,7 @@ fn find_galaxies(map: &Map) -> Vec<(usize, usize)> {
 }
 
 pub fn expand_range<const F: usize>(orig: &[usize], count: usize) -> Vec<usize> {
+    let r = F - 1;
     let mut new = orig.to_owned();
     let mut i = 0usize;
     let mut upto = 0usize;
@@ -47,7 +48,7 @@ pub fn expand_range<const F: usize>(orig: &[usize], count: usize) -> Vec<usize> 
         }
         let delta = orig[i] - upto;
         if delta > 1 {
-            let expansion = (delta - 1) * (F - 1);
+            let expansion = (delta - 1) * r;
             if delta > 0 {
                 new[i..].iter_mut().for_each(|x| *x += expansion);
             }
