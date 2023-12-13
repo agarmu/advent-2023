@@ -1,4 +1,4 @@
-use std::collections::LinkedList;
+use std::collections::HashMap;
 
 use itertools::Itertools;
 
@@ -37,7 +37,7 @@ fn find_galaxies(map: &Map) -> Vec<(usize, usize)> {
     res
 }
 
-pub fn expand_range<const F: usize>(orig: &[usize], count: usize) -> Vec<usize> {
+pub fn expand_range<const F: usize>(orig: Vec<usize>, count: usize) -> HashMap<usize, usize> {
     let r = F - 1;
     let mut new = orig.to_owned();
     let mut i = 0usize;
@@ -56,22 +56,27 @@ pub fn expand_range<const F: usize>(orig: &[usize], count: usize) -> Vec<usize> 
         upto = orig[i];
         i += 1;
     }
-    new
+    let mut y = HashMap::new();
+    y.extend(orig.iter().zip(new.iter()));
+    y
 }
 
 fn find_min_distance<const F: usize>(map: Map) -> usize {
     let mut galaxies = find_galaxies(&map);
     // expansion
-    let rows = galaxies.iter().map(|x| x.0).sorted().unique().collect_vec();
-    let cols = galaxies.iter().map(|x| x.1).sorted().unique().collect_vec();
+    let rows = expand_range::<F>(
+        galaxies.iter().map(|x| x.0).sorted().unique().collect_vec(),
+        map.len(),
+    );
+    let cols = expand_range::<F>(
+        galaxies.iter().map(|x| x.1).sorted().unique().collect_vec(),
+        map[0].len(),
+    );
     // copies
-    let new_rows = expand_range::<F>(&rows, map.len());
-    let new_cols = expand_range::<F>(&cols, map[0].len());
     // expand the galaxies
-    for galaxy in galaxies.iter_mut() {
-        let newy = new_rows[rows.iter().position(|x| *x == galaxy.0).unwrap()];
-        let newx = new_cols[cols.iter().position(|x| *x == galaxy.1).unwrap()];
-        *galaxy = (newy, newx);
+    for (y, x) in galaxies.iter_mut() {
+        *y = *rows.get(y).unwrap();
+        *x = *cols.get(x).unwrap();
     }
     let mut total = 0;
     for i in 0..(galaxies.len() - 1) {
