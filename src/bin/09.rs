@@ -43,17 +43,17 @@ pub fn calculate_prev_value(x: &mut [i64]) -> i64 {
     fst - prev
 }
 
-
 pub fn part_one(input: &str) -> Option<i64> {
     Some(
         input
             .lines()
             .map(|x| {
-                    let mut v = x.split_ascii_whitespace()
-                        .map(|x| x.parse::<i64>().unwrap())
-                        .collect_vec();
-                    let r = calculate_next_value(&mut v);
-                    r
+                let mut v = x
+                    .split_ascii_whitespace()
+                    .map(|x| x.parse::<i64>().unwrap())
+                    .collect_vec();
+                let r = calculate_next_value(&mut v);
+                r
             })
             .sum(),
     )
@@ -63,10 +63,11 @@ pub fn part_two(input: &str) -> Option<i64> {
         input
             .lines()
             .map(|x| {
-                    let mut v = x.split_ascii_whitespace()
-                        .map(|x| x.parse::<i64>().unwrap())
-                        .collect_vec();
-                    calculate_prev_value(&mut v)
+                let mut v = x
+                    .split_ascii_whitespace()
+                    .map(|x| x.parse::<i64>().unwrap())
+                    .collect_vec();
+                calculate_prev_value(&mut v)
             })
             .sum(),
     )
